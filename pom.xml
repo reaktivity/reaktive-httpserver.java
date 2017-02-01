@@ -7,7 +7,7 @@
   <groupId>org.reaktivity</groupId>
   <artifactId>reaktive-httpserver</artifactId>
   <version>develop-SNAPSHOT</version>
-  <name>HttpServer via Reaktor</name>
+  <name>HttpServer using Reaktor</name>
   <url>https://github.com/reaktivity/reaktive-httpserver.java</url>
 
   <licenses>

@@ -13,34 +13,55 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package org.reaktivity.reaktive.httpserver;
+package org.reaktivity.reaktive.httpserver.test;
+
+import static org.reaktivity.nukleus.Configuration.DIRECTORY_PROPERTY_NAME;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.Properties;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+import org.reaktivity.nukleus.Configuration;
+import org.reaktivity.reaktive.httpserver.internal.HttpServerProviderImpl;
 
-import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
 
 @SuppressWarnings("restriction")
 public final class HttpServerRule implements TestRule
 {
+    private final Properties properties = new Properties();
+
     private HttpServer server;
+
+    public HttpServerRule directory(
+        String directory)
+    {
+        properties.setProperty(DIRECTORY_PROPERTY_NAME, directory);
+        return this;
+    }
 
     public HttpServerRule init(
         InetSocketAddress address,
         int backlog)
     {
+        final Configuration config = HttpServerProviderImpl.CONFIGURATION.get();
+
         try
         {
+            HttpServerProviderImpl.CONFIGURATION.set(new Configuration(properties));
             this.server = HttpServer.create(address, backlog);
         }
         catch (IOException ex)
         {
             throw new RuntimeException(ex);
+        }
+        finally
+        {
+            HttpServerProviderImpl.CONFIGURATION.set(config);
         }
         return this;
     }

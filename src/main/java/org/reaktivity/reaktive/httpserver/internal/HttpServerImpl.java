@@ -31,8 +31,6 @@ import org.reaktivity.nukleus.Configuration;
 import org.reaktivity.nukleus.Controller;
 import org.reaktivity.nukleus.http.internal.HttpController;
 import org.reaktivity.nukleus.tcp.internal.TcpController;
-import org.reaktivity.nukleus.tcp.internal.types.control.Role;
-import org.reaktivity.nukleus.tcp.internal.types.control.State;
 import org.reaktivity.reaktor.Reaktor;
 
 import com.sun.net.httpserver.HttpContext;
@@ -80,9 +78,12 @@ public final class HttpServerImpl extends HttpServer
             final long httpTargetRef = System.identityHashCode(this);
             final Map<String, String> headers = Collections.emptyMap();
 
-            this.httpSourceRef = routeHttp(TCP_NUKLEUS_NAME, 0L, HttpServerNukleus.NAME, httpTargetRef, headers);
-            unrouteHttp(TCP_NUKLEUS_NAME, httpSourceRef, HttpServerNukleus.NAME, httpTargetRef, headers);
-            routeTcp(ANY_DEVICE_NAME, port, HTTP_NUKLEUS_NAME, httpSourceRef, address);
+            HttpController http = reaktor.controller(HttpController.class);
+            this.httpSourceRef = http.routeInputNew(TCP_NUKLEUS_NAME, 0L, HttpServerNukleus.NAME, httpTargetRef, headers).join();
+            http.unrouteInputNew(TCP_NUKLEUS_NAME, httpSourceRef, HttpServerNukleus.NAME, httpTargetRef, headers).join();
+
+            TcpController tcp = reaktor.controller(TcpController.class);
+            tcp.routeInputNew(ANY_DEVICE_NAME, port, HTTP_NUKLEUS_NAME, httpSourceRef, address).join();
 
             this.address = addr;
 
@@ -180,45 +181,6 @@ public final class HttpServerImpl extends HttpServer
         return TcpController.class.equals(controller);
     }
 
-    private long routeTcp(
-        String source,
-        long sourceRef,
-        String target,
-        long targetRef,
-        InetAddress address)
-    {
-        TcpController tcp = reaktor.controller(TcpController.class);
-        return tcp.route(Role.INPUT, State.NEW, source, sourceRef, target, targetRef, address).join();
-    }
-
-    private long routeHttp(
-        String source,
-        long sourceRef,
-        String target,
-        long targetRef,
-        Map<String, String> headers)
-    {
-        HttpController http = reaktor.controller(HttpController.class);
-
-        return http.route(org.reaktivity.nukleus.http.internal.types.control.Role.INPUT,
-                org.reaktivity.nukleus.http.internal.types.control.State.NEW,
-                source, sourceRef, target, targetRef, headers).join();
-    }
-
-    private Void unrouteHttp(
-        String source,
-        long sourceRef,
-        String target,
-        long targetRef,
-        Map<String, String> headers)
-    {
-        HttpController http = reaktor.controller(HttpController.class);
-
-        return http.unroute(org.reaktivity.nukleus.http.internal.types.control.Role.INPUT,
-                org.reaktivity.nukleus.http.internal.types.control.State.NEW,
-                source, sourceRef, target, targetRef, headers).join();
-    }
-
     private HttpContext createContext0(
         String path)
     {
@@ -232,7 +194,8 @@ public final class HttpServerImpl extends HttpServer
 
         Map<String, String> headers = singletonMap(PATH_PSEUDO_HEADER_NAME, path);
 
-        routeHttp(TCP_NUKLEUS_NAME, httpSourceRef, HttpServerNukleus.NAME, contextRef, headers);
+        HttpController http = reaktor.controller(HttpController.class);
+        http.routeInputNew(TCP_NUKLEUS_NAME, httpSourceRef, HttpServerNukleus.NAME, contextRef, headers).join();
 
         return context;
     }
@@ -248,7 +211,8 @@ public final class HttpServerImpl extends HttpServer
             long targetRef = System.identityHashCode(context);
             Map<String, String> headers = singletonMap(PATH_PSEUDO_HEADER_NAME, path);
 
-            unrouteHttp(TCP_NUKLEUS_NAME, httpSourceRef, HttpServerNukleus.NAME, targetRef, headers);
+            HttpController http = reaktor.controller(HttpController.class);
+            http.unrouteInputNew(TCP_NUKLEUS_NAME, httpSourceRef, HttpServerNukleus.NAME, targetRef, headers).join();
         }
 
         return context;

@@ -132,7 +132,7 @@ public final class Target implements Nukleus
                 .extension(e -> e.reset())
                 .build();
 
-        streamsBuffer.write(begin.typeId(), begin.buffer(), begin.offset(), begin.length());
+        streamsBuffer.write(begin.typeId(), begin.buffer(), begin.offset(), begin.sizeof());
     }
 
     public int doData(
@@ -175,7 +175,7 @@ public final class Target implements Nukleus
                 .extension(e -> e.reset())
                 .build();
 
-        streamsBuffer.write(end.typeId(), end.buffer(), end.offset(), end.length());
+        streamsBuffer.write(end.typeId(), end.buffer(), end.offset(), end.sizeof());
     }
 
     public void doHttpBegin(
@@ -191,7 +191,7 @@ public final class Target implements Nukleus
                 .extension(e -> e.set(visitHttpBeginEx(mutator)))
                 .build();
 
-        streamsBuffer.write(begin.typeId(), begin.buffer(), begin.offset(), begin.length());
+        streamsBuffer.write(begin.typeId(), begin.buffer(), begin.offset(), begin.sizeof());
     }
 
     public void doHttpData(
@@ -217,7 +217,7 @@ public final class Target implements Nukleus
                 .extension(e -> e.reset())
                 .build();
 
-        streamsBuffer.write(end.typeId(), end.buffer(), end.offset(), end.length());
+        streamsBuffer.write(end.typeId(), end.buffer(), end.offset(), end.sizeof());
     }
 
     private Flyweight.Builder.Visitor visitHttpBeginEx(
@@ -227,6 +227,6 @@ public final class Target implements Nukleus
             httpBeginExRW.wrap(buffer, offset, limit)
                          .headers(headers)
                          .build()
-                         .length();
+                         .sizeof();
     }
 }

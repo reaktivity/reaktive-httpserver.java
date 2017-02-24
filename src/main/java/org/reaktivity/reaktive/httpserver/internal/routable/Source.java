@@ -169,7 +169,7 @@ public final class Source implements Nukleus
         final WindowFW window = windowRW.wrap(writeBuffer, 0, writeBuffer.capacity())
                 .streamId(streamId).update(update).build();
 
-        throttleBuffer.write(window.typeId(), window.buffer(), window.offset(), window.length());
+        throttleBuffer.write(window.typeId(), window.buffer(), window.offset(), window.sizeof());
     }
 
     public void doReset(
@@ -178,7 +178,7 @@ public final class Source implements Nukleus
         final ResetFW reset = resetRW.wrap(writeBuffer, 0, writeBuffer.capacity())
                 .streamId(streamId).build();
 
-        throttleBuffer.write(reset.typeId(), reset.buffer(), reset.offset(), reset.length());
+        throttleBuffer.write(reset.typeId(), reset.buffer(), reset.offset(), reset.sizeof());
     }
 
     public void removeStream(

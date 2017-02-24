@@ -45,10 +45,10 @@
     <junit.version>4.12</junit.version>
     <jmock.version>2.8.2</jmock.version>
     <k3po.version>3.0.0-alpha-54</k3po.version>
-    <nukleus.plugin.version>0.6.1</nukleus.plugin.version>
-    <nukleus.tcp.version>0.2</nukleus.tcp.version>
-    <nukleus.http.version>0.3</nukleus.http.version>
-    <nukleus.http.spec.version>0.5</nukleus.http.spec.version>
+    <nukleus.plugin.version>0.7.3</nukleus.plugin.version>
+    <nukleus.tcp.version>0.3</nukleus.tcp.version>
+    <nukleus.http.version>0.4</nukleus.http.version>
+    <nukleus.http.spec.version>0.6</nukleus.http.spec.version>
     <reaktor.version>0.2</reaktor.version>
   </properties>
 
@@ -195,34 +195,6 @@
         </executions>
       </plugin>
     </plugins>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.reaktivity</groupId>
-                    <artifactId>nukleus-maven-plugin</artifactId>
-                    <versionRange>[0.1,)</versionRange>
-                    <goals>
-                      <goal>generate</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore></ignore>
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
   <profiles>

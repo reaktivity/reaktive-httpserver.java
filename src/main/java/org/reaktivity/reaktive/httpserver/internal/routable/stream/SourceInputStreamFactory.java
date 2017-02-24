@@ -208,7 +208,7 @@ public final class SourceInputStreamFactory
             final HttpContext context = supplyContext.apply(newSourceRef);
             final HttpHandler handler = (context != null) ? context.getHandler() : null;
 
-            if (handler != null && extension.length() > 0)
+            if (handler != null && extension.sizeof() > 0)
             {
                 this.correlationId = correlationId;
                 this.sourceId = newSourceId;
@@ -263,7 +263,7 @@ public final class SourceInputStreamFactory
             dataRO.wrap(buffer, index, index + length);
 
             OctetsFW payload = dataRO.payload();
-            window -= payload.length() - 1;
+            window -= dataRO.length();
 
             if (window < 0)
             {

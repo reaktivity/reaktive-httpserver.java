@@ -42,7 +42,7 @@
     <checkstyle.config.location>src/conf/checkstyle/configuration.xml</checkstyle.config.location>
     <checkstyle.suppressions.location>src/conf/checkstyle/suppressions.xml</checkstyle.suppressions.location>
 
-    <junit.version>4.12</junit.version>
+    <junit.version>4.13.1</junit.version>
     <jmock.version>2.8.2</jmock.version>
     <k3po.version>3.0.0-alpha-54</k3po.version>
     <nukleus.plugin.version>0.7.3</nukleus.plugin.version>
